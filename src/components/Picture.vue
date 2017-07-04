@@ -30,7 +30,6 @@ export default {
     },
     mounted() {
         setTimeout(() => { this.visible = true }, Math.floor(Math.random() * 200))
-        console.dir(this.data)
     }
 }
 </script>
