@@ -5,7 +5,7 @@ import axios from 'axios'
 Vue.use(Vuex)
 
 const BUFFER_SIZE = 5
-const API_HOST = 'http://localhost:8000'
+const API_HOST = 'http://192.168.2.138:8080'
 
 export default new Vuex.Store({
     state: {
@@ -42,7 +42,7 @@ export default new Vuex.Store({
                 })
         },
         ADVANCE_BUFFER: function ({ commit }) {
-            axios.get(API_HOST + '/newpic')
+            return axios.get(API_HOST + '/newpic')
                 .then(res => {
                     commit('ADVANCE_BUFFER', {
                         nextPic: res.data
@@ -76,6 +76,8 @@ export default new Vuex.Store({
         pictures: state => state.pictures,
         pictureCount: state => state.pictures.length,
         buffer: state => state.buffer,
-        current: state => state.buffer.length > 0 ? state.buffer[0] : null
+        current: state => state.buffer.length > 0 ? state.buffer[0] : null,
+        next: state => state.buffer.length > 1 ? state.buffer[1]: null,
+        apiHost: () => API_HOST
     }
 })

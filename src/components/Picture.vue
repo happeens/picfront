@@ -16,13 +16,22 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'picture',
     props: [ 'data' ],
+    computed: {
+        ...mapGetters([
+            'apiHost'
+        ]),
+        url () {
+            return this.apiHost + this.data.filename
+        }
+    },
     data () {
         return {
             visible: false,
-            url: 'http://localhost:8000' + this.data.filename,
             up: this.data.ups,
             down: this.data.downs,
             conf: Math.round(this.data.confidenceLevel * 1000, 4) / 1000
