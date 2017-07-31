@@ -5,7 +5,7 @@
         <img :src="getNextUrl()" ref="second" class="second">
     </div>
 
-    <div class="next">
+    <div class="next" ref="next">
         <img :src="getNextUrl()">
     </div>
 
@@ -48,8 +48,15 @@ export default {
         let hammertime = new Hammer(this.$refs.current)
         let deltaX = 0
         let screenWidth = window.innerWidth
+
         hammertime.on('pan', (e) => {
             deltaX = e.deltaX
+            let percentMoved = Math.abs(deltaX / screenWidth)
+            let scale = (80 + (20 * percentMoved)) / 100
+            let opacity = (50 + (50 * percentMoved)) / 100
+            this.$refs.next.style.transform =
+                `scale3d(${scale}, ${scale}, 1)`
+            this.$refs.next.style.opacity = `${opacity}`
             this.$refs.current.style.transform =
                 `translate3d(${e.deltaX}px, 0, 0)`
         })
@@ -60,6 +67,8 @@ export default {
         function touchEnded() {
             let percentMoved = Math.round((deltaX / screenWidth) * 100)
             let voteSign = Math.sign(percentMoved)
+            this.$refs.next.style.opacity = '1.0'
+            this.$refs.next.style.transform = 'scale3d(1, 1, 1)'
             if (Math.abs(percentMoved) > 40) {
                 let translateXValue = 100 * voteSign
 
@@ -123,6 +132,7 @@ export default {
 <style lang="scss">
 html, body {
     overflow: hidden;
+    background-color: #313131;
 }
 
 .container, .next {
@@ -145,9 +155,6 @@ html, body {
     }
 }
 
-.container.transitioning {
-}
-
 .animate {
     transition: all .1s linear;
     pointer-events: none;
@@ -159,6 +166,10 @@ html, body {
 
 .next {
     z-index: 0;
+    transform-origin: 50% 50%;
+    transform: scale3d(0.8, 0.8, 1);
+    opacity: 0.5;
+    transition: all .1s linear;
 }
 
 div.buffer {
