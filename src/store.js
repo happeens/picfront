@@ -5,9 +5,7 @@ import axios from 'axios'
 Vue.use(Vuex)
 
 const BUFFER_SIZE = 5
-// const API_HOST = 'http://localhost:8000'
-// const API_HOST = 'http://192.168.2.138:8080'
-const API_HOST = 'http://192.168.2.236:8000'
+const API_HOST = 'http://192.168.2.241'
 
 export default new Vuex.Store({
     state: {

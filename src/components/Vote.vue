@@ -148,9 +148,11 @@ export default {
                     this.$refs.next.classList.remove('animate')
 
                     this.$store.dispatch('ADVANCE_BUFFER').then(() => {
+                        this.resetTimer()
                         this.$refs.first.style.display = ''
                         this.$refs.second.style.display = ''
                     })
+
                 }, 100)
 
                 return
