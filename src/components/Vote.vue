@@ -53,14 +53,16 @@ export default {
         this.$store.dispatch('LOAD_BUFFER')
             .then(this.resetTimer)
 
+        const upKeys = "uiopü+jklöä#nm,.-"
+        const downKeys = 'qwertasdfgyxcv'
+
         document.onkeydown = (e) => {
-            console.dir(e)
-            if (e.keyCode === 38) {
+            if (upKeys.indexOf(e.key) > -1) {
                 this.$store.dispatch('VOTE_CURRENT', { type: 'UP' })
                 this.$store.dispatch('ADVANCE_BUFFER').then(this.resetTimer)
             }
 
-            if (e.keyCode === 40) {
+            if (downKeys.indexOf(e.key) > -1) {
                 this.$store.dispatch('VOTE_CURRENT', { type: 'DOWN' })
                 this.$store.dispatch('ADVANCE_BUFFER').then(this.resetTimer)
             }

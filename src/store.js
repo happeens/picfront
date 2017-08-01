@@ -59,7 +59,7 @@ export default new Vuex.Store({
 
             let picId = state.buffer[0]._id
             axios.post(`${API_HOST}/${picId}/votes`, { type: type })
-                .then(() => { console.log('voted successfully') })
+                .then(() => { console.log('voted ' + type) })
         }
     },
     mutations: {
