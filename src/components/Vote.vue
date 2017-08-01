@@ -151,6 +151,8 @@ export default {
                         this.resetTimer()
                         this.$refs.first.style.display = ''
                         this.$refs.second.style.display = ''
+                        this.$refs.next.style.opacity = ''
+                        this.$refs.next.style.transform = ''
                     })
 
                 }, 100)
@@ -269,7 +271,8 @@ html, body {
     z-index: 0;
     transform-origin: 50% 50%;
     transform: scale3d(0.8, 0.8, 1);
-    opacity: 0.5;
+    opacity: .5;
+    transform: scale3d(.8, .8, 1);
 }
 
 div.buffer {
