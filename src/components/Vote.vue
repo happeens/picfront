@@ -1,5 +1,16 @@
 <template>
 <div class="outer">
+    <div class="downvote" ref="downvote">
+        <svg viewBox="0 0 24 24">
+                <path fill="#FFFFFF" d="M1,4.27L2.28,3L20,20.72L18.73,22L15.18,18.44L13.45,20.03L12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,7.55 2.23,6.67 2.63,5.9L1,4.27M7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,11.07 20.42,13.32 17.79,15.97L5.27,3.45C5.95,3.16 6.7,3 7.5,3Z" />
+        </svg>
+    </div>
+    <div class="upvote" ref="upvote">
+        <svg viewBox="0 0 24 24">
+                <path fill="#FFFFFF" d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
+        </svg>
+    </div>
+
     <div class="container" ref="current">
         <img :src="getCurrentUrl()" ref="first" class="first">
         <img :src="getNextUrl()" ref="second" class="second">
@@ -10,7 +21,11 @@
     </div>
 
     <div class="buffer">
-        <div v-for="picture in buffer" :key="picture" :style="getBufferStyle(picture)"></div>
+        <div
+            v-for="picture in buffer"
+            :key="picture"
+            :style="getBufferStyle(picture)"
+        ></div>
     </div>
 </div>
 </template>
@@ -51,7 +66,8 @@ export default {
 
         hammertime.on('pan', (e) => {
             deltaX = e.deltaX
-            let percentMoved = Math.abs(deltaX / screenWidth)
+            let percent = deltaX / screenWidth
+            let percentMoved = Math.abs(percent)
             let scale = (80 + (20 * percentMoved)) / 100
             let opacity = (50 + (50 * percentMoved)) / 100
             this.$refs.next.style.transform =
@@ -59,17 +75,42 @@ export default {
             this.$refs.next.style.opacity = `${opacity}`
             this.$refs.current.style.transform =
                 `translate3d(${e.deltaX}px, 0, 0)`
+
+            if (percent >= 0.4) {
+                this.$refs.upvote.classList.add('selected')
+                this.$refs.downvote.classList.remove('selected')
+            } else if (percent <= -0.4) {
+                this.$refs.downvote.classList.add('selected')
+                this.$refs.upvote.classList.remove('selected')
+            } else {
+                this.$refs.upvote.classList.remove('selected')
+                this.$refs.downvote.classList.remove('selected')
+            }
         })
+
+        this.$refs.current.addEventListener('touchstart', touchStarted.bind(this))
+        this.$refs.current.addEventListener('mousedown', touchStarted.bind(this))
 
         this.$refs.current.addEventListener('touchend', touchEnded.bind(this))
         this.$refs.current.addEventListener('mouseup', touchEnded.bind(this))
 
+        function touchStarted() {
+            this.$refs.upvote.classList.add('active')
+            this.$refs.downvote.classList.add('active')
+        }
+
         function touchEnded() {
+            this.$refs.upvote.classList.remove('active')
+            this.$refs.downvote.classList.remove('active')
+
             let percentMoved = Math.round((deltaX / screenWidth) * 100)
             let voteSign = Math.sign(percentMoved)
-            this.$refs.next.style.opacity = '1.0'
-            this.$refs.next.style.transform = 'scale3d(1, 1, 1)'
+
             if (Math.abs(percentMoved) > 40) {
+                this.$refs.next.classList.add('animate')
+                this.$refs.next.style.opacity = '1.0'
+                this.$refs.next.style.transform = 'scale3d(1, 1, 1)'
+
                 let translateXValue = 100 * voteSign
 
                 let voteType = {
@@ -90,6 +131,7 @@ export default {
 
                     this.$refs.current.style.transform = ''
                     this.$refs.current.classList.remove('animate')
+                    this.$refs.next.classList.remove('animate')
 
                     this.$store.dispatch('ADVANCE_BUFFER').then(() => {
                         this.$refs.first.style.display = ''
@@ -135,6 +177,43 @@ html, body {
     background-color: #313131;
 }
 
+.upvote, .downvote {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 20%;
+    opacity: 0;
+    z-index: 99;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10em;
+    color: #FFF;
+
+    &.active {
+        opacity: .2;
+    }
+
+    &.active.selected {
+        opacity: .7;
+    }
+
+    svg {
+        width: 70%;
+    }
+}
+
+.upvote {
+    right: 0;
+    background-color: #00B700;
+}
+
+.downvote {
+    left: 0;
+    background-color: #e71919;
+}
+
 .container, .next {
     overflow: hidden;
     position: absolute;
@@ -142,6 +221,7 @@ html, body {
     bottom: 0;
     left: 0;
     right: 0;
+    max-width: 100%;
 
     img {
         height: 100%;
@@ -169,7 +249,6 @@ html, body {
     transform-origin: 50% 50%;
     transform: scale3d(0.8, 0.8, 1);
     opacity: 0.5;
-    transition: all .1s linear;
 }
 
 div.buffer {
