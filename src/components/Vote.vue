@@ -36,6 +36,11 @@ import Hammer from 'hammerjs'
 
 export default {
     name: 'vote',
+    data () {
+        return {
+            timerId: 0
+        }
+    },
     computed: {
         ...mapGetters([
             'buffer',
@@ -46,16 +51,18 @@ export default {
     },
     mounted() {
         this.$store.dispatch('LOAD_BUFFER')
+            .then(this.resetTimer)
 
         document.onkeydown = (e) => {
+            console.dir(e)
             if (e.keyCode === 38) {
                 this.$store.dispatch('VOTE_CURRENT', { type: 'UP' })
-                this.nextPic()
+                this.$store.dispatch('ADVANCE_BUFFER').then(this.resetTimer)
             }
 
             if (e.keyCode === 40) {
                 this.$store.dispatch('VOTE_CURRENT', { type: 'DOWN' })
-                this.nextPic()
+                this.$store.dispatch('ADVANCE_BUFFER').then(this.resetTimer)
             }
         }
 
@@ -103,10 +110,13 @@ export default {
             this.$refs.upvote.classList.remove('active')
             this.$refs.downvote.classList.remove('active')
 
+            this.$refs.upvote.classList.remove('selected')
+            this.$refs.downvote.classList.remove('selected')
+
             let percentMoved = Math.round((deltaX / screenWidth) * 100)
             let voteSign = Math.sign(percentMoved)
 
-            if (Math.abs(percentMoved) > 40) {
+            if (Math.abs(percentMoved) > 30) {
                 this.$refs.next.classList.add('animate')
                 this.$refs.next.style.opacity = '1.0'
                 this.$refs.next.style.transform = 'scale3d(1, 1, 1)'
@@ -122,6 +132,8 @@ export default {
                     'VOTE_CURRENT',
                     { type: voteType[voteSign.toString()] }
                 )
+
+                deltaX = 0
 
                 this.$refs.current.classList.add('animate')
                 this.$refs.current.style.transform = `translate3d(${translateXValue}%, 0, 0)`
@@ -150,8 +162,13 @@ export default {
         }
     },
     methods: {
-        nextPic () {
-            this.$store.dispatch('ADVANCE_BUFFER')
+        resetTimer () {
+            clearTimeout(this.timerId)
+
+            this.timerId = setTimeout(() => {
+                this.$store.dispatch('ADVANCE_BUFFER')
+                    .then(this.resetTimer)
+            }, 30 * 1000)
         },
         getCurrentUrl () {
             if (!this.current) return ''

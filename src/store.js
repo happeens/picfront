@@ -6,8 +6,8 @@ Vue.use(Vuex)
 
 const BUFFER_SIZE = 5
 // const API_HOST = 'http://localhost:8000'
-const API_HOST = 'http://192.168.2.138:8080'
-// const API_HOST = 'http://192.168.2.236:8000'
+// const API_HOST = 'http://192.168.2.138:8080'
+const API_HOST = 'http://192.168.2.236:8000'
 
 export default new Vuex.Store({
     state: {
@@ -30,7 +30,7 @@ export default new Vuex.Store({
                 proms.push(axios.get(API_HOST + '/newpic'))
             }
 
-            Promise.all(proms)
+            return Promise.all(proms)
                 .then(responses => {
                     let buffer = []
 
