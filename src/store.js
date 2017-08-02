@@ -10,10 +10,12 @@ const API_HOST = 'http://192.168.2.241'
 export default new Vuex.Store({
     state: {
         pictures: [],
-        buffer: []
+        buffer: [],
+        loading: true
     },
     actions: {
-        LOAD_PICTURES: function ({ commit }) {
+        LOAD_PICTURES: function ({ state, commit }) {
+            state.loading = true
             axios.get(API_HOST + '/hotpics')
                 .then(res => {
                     commit('SET_PICTURES', {
@@ -21,7 +23,8 @@ export default new Vuex.Store({
                     })
                 })
         },
-        LOAD_BUFFER: function ({ commit }) {
+        LOAD_BUFFER: function ({ state, commit }) {
+            state.loading = true
             let proms = []
 
             for (var i = 0; i < BUFFER_SIZE; i++) {
@@ -41,15 +44,22 @@ export default new Vuex.Store({
                     })
                 })
         },
-        ADVANCE_BUFFER: function ({ commit }) {
+        ADVANCE_BUFFER: function ({ state, commit }) {
+            state.loading = true
+            // console.log('advancing buffer')
             return axios.get(API_HOST + '/newpic')
                 .then(res => {
+                    // console.log('got advanced pic')
                     commit('ADVANCE_BUFFER', {
                         nextPic: res.data
                     })
                 })
         },
         VOTE_CURRENT: function ({ state }, payload) {
+            state.loading = true
+            // console.log(`voting ${payload.type}
+                         // on pic ${state.buffer[0]}`)
+
             if (state.buffer.length == 0) return
 
             let type = payload.type.toUpperCase()
@@ -63,13 +73,16 @@ export default new Vuex.Store({
     mutations: {
         SET_PICTURES: (state, { pictures }) => {
             state.pictures = pictures
+            state.loading = false
         },
         SET_BUFFER: (state, { buffer }) => {
             state.buffer = buffer
+            state.loading = false
         },
         ADVANCE_BUFFER: (state, { nextPic }) => {
             state.buffer.splice(0, 1)
             state.buffer.push(nextPic)
+            state.loading = false
         }
     },
     getters: {
@@ -78,6 +91,7 @@ export default new Vuex.Store({
         buffer: state => state.buffer,
         current: state => state.buffer.length > 0 ? state.buffer[0] : null,
         next: state => state.buffer.length > 1 ? state.buffer[1]: null,
-        apiHost: () => API_HOST
+        apiHost: () => API_HOST,
+        loadingPics: state => state.loading
     }
 })

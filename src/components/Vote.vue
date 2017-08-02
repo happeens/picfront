@@ -1,5 +1,9 @@
 <template>
 <div class="outer">
+    <div class="loading" :class="{ active: loadingPics }">
+        <div class="spinner"></div>
+    </div>
+
     <div class="downvote" ref="downvote">
         <svg viewBox="0 0 24 24">
                 <path fill="#FFFFFF" d="M1,4.27L2.28,3L20,20.72L18.73,22L15.18,18.44L13.45,20.03L12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,7.55 2.23,6.67 2.63,5.9L1,4.27M7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,11.07 20.42,13.32 17.79,15.97L5.27,3.45C5.95,3.16 6.7,3 7.5,3Z" />
@@ -21,11 +25,12 @@
     </div>
 
     <div class="buffer">
-        <div
+        <img
             v-for="picture in buffer"
             :key="picture"
-            :style="getBufferStyle(picture)"
-        ></div>
+            :src="getBufferUrl(picture)"
+            ref="picture"
+        >
     </div>
 </div>
 </template>
@@ -43,6 +48,7 @@ export default {
     },
     computed: {
         ...mapGetters([
+            'loadingPics',
             'buffer',
             'current',
             'next',
@@ -186,9 +192,9 @@ export default {
 
             return this.apiHost + this.next.filename
         },
-        getBufferStyle: function(picture) {
-            let url = this.apiHost + picture.filename
-            return `background-image: url(${url});`
+        getBufferUrl: function(picture) {
+            return this.apiHost + picture.filename
+            // return `background-image: url(${url});`
         }
     }
 }
@@ -273,11 +279,64 @@ html, body {
     transform: scale3d(0.8, 0.8, 1);
     opacity: .5;
     transform: scale3d(.8, .8, 1);
+    will-change: transform;
 }
 
 div.buffer {
     width: 0px;
     height: 0px;
     overflow: hidden;
+}
+
+.loading {
+    z-index: 999;
+	display: flex;
+	align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(#000, 0);
+    pointer-events: none;
+    opacity: 0;
+    transition: all .2s linear;
+    color: #FFF;
+
+    &.active {
+        opacity: 1;
+        pointer-events: auto;
+        background-color: rgba(#000, .6);
+    }
+}
+
+.spinner {
+  width: 100px;
+  height: 100px;
+  background-color: #EEE;
+
+  margin: 100px auto;
+  -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+  animation: sk-rotateplane 1.2s infinite ease-in-out;
+}
+
+@-webkit-keyframes sk-rotateplane {
+  0% { -webkit-transform: perspective(300px) }
+  50% { -webkit-transform: perspective(300px) rotateY(180deg) }
+  100% { -webkit-transform: perspective(300px) rotateY(180deg)  rotateX(180deg) }
+}
+
+@keyframes sk-rotateplane {
+  0% { 
+    transform: perspective(300px) rotateX(0deg) rotateY(0deg);
+    -webkit-transform: perspective(300px) rotateX(0deg) rotateY(0deg) 
+  } 50% { 
+    transform: perspective(300px) rotateX(-180.1deg) rotateY(0deg);
+    -webkit-transform: perspective(300px) rotateX(-180.1deg) rotateY(0deg) 
+  } 100% { 
+    transform: perspective(300px) rotateX(-180deg) rotateY(-179.9deg);
+    -webkit-transform: perspective(300px) rotateX(-180deg) rotateY(-179.9deg);
+  }
 }
 </style>
