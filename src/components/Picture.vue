@@ -1,17 +1,20 @@
 <template>
 <div class="container">
-    <transition name="zoom-fade">
-        <div v-if="visible" class="picture">
-            <div class="content">
-                <img :src="url"></img>
-            </div>
-            <div class="meta">
-                <div><div>{{ up }}</div></div>
-                <div>{{ down }}</div>
-                <div>{{ conf }}</div>
-            </div>
+    <div class="checkbox">
+        <input type="checkbox" name="censored" @click="changeCensoredStatus" v-model="censored" class="check">
+        censored
+    </div>
+
+    <div class="picture">
+        <div class="content">
+            <img :src="url"></img>
         </div>
-    </transition>
+        <div class="meta">
+            <div><div>{{ up }}</div></div>
+            <div>{{ down }}</div>
+            <div>{{ conf }}</div>
+        </div>
+    </div>
 </div>
 </template>
 
@@ -29,16 +32,18 @@ export default {
             return this.apiHost + this.data.filename
         }
     },
-    data () {
-        return {
-            visible: false,
-            up: this.data.ups,
-            down: this.data.downs,
-            conf: Math.round(this.data.confidenceLevel * 1000, 4) / 1000
+    methods: {
+        changeCensoredStatus () {
+            console.log('changing status to ' + this.censored)
         }
     },
-    mounted() {
-        setTimeout(() => { this.visible = true }, Math.floor(Math.random() * 200))
+    data () {
+        return {
+            up: this.data.ups,
+            down: this.data.downs,
+            conf: Math.round(this.data.confidenceLevel * 1000, 4) / 1000,
+            censored: this.data.censored || false
+        }
     }
 }
 </script>
@@ -48,6 +53,17 @@ div.container {
     position: relative;
     width: 20%;
     height: 20vw;
+    display: flex;
+    justify-content: center;
+
+    div.checkbox {
+        z-index: 1;
+        position: absolute;
+        top: 0;
+        margin-top: 10%;
+        padding: 10px 15px;
+        background-color: rgba(#FFF, .3);
+    }
     
     div.picture {
         position: relative;
