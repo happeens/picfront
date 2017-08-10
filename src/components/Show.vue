@@ -102,6 +102,7 @@ export default {
     }
 }
 
+// fade animation
 .fade-enter, .fade-leave-to {
     opacity: 0;
 }
@@ -114,6 +115,7 @@ export default {
     transition: all 1s ease-in-out;
 }
 
+// slide animation
 .slide-enter {
     transform: translate3d(-100%, 0, 0);
 }
