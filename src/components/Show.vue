@@ -69,7 +69,6 @@ export default {
                     ]
                     let i = parseInt(Math.random() * animations.length)
                     this.currentAnimation = animations[i];
-                    console.log(this.currentAnimation)
                 })
             }
         }
