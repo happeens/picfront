@@ -37,7 +37,7 @@ export default new Vuex.Store({
         },
         LOAD_PICTURES: function ({ state, commit }) {
             state.loading = true
-            axios.get(API_HOST + '/hotpics?all=true&limit=500')
+            axios.get(API_HOST + '/hotpics?all=true&limit=600')
                 .then(res => {
                     commit('SET_PICTURES', {
                         pictures: res.data

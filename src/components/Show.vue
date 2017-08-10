@@ -84,7 +84,7 @@ export default {
                     self.$refs.currentimg.src = imghost
                 }
 
-                setInterval(this.turnPics, 5 * 1000)
+                setInterval(this.turnPics, 15 * 1000)
             })
     }
 }
