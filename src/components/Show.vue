@@ -1,13 +1,13 @@
 <template>
 <div class="container">
     <transition :name="currentAnimation">
-        <div v-show="!turn" class="current">
+        <div v-show="!turn">
             <img ref="currentimg">
         </div>
     </transition>
 
     <transition :name="currentAnimation">
-        <div v-show="turn" class="next">
+        <div v-show="turn">
             <img ref="nextimg">
         </div>
     </transition>
