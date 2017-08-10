@@ -23,7 +23,7 @@ export default {
         return {
             turn: false,
             currentIndex: 0,
-            currentAnimation: 'scale'
+            currentAnimation: 'rotate'
         }
     },
     computed: {
@@ -52,9 +52,24 @@ export default {
                 }
 
                 requestAnimationFrame(() => {
-                    let animations = ['slide', 'fade', 'scale']
+                    let animations = [
+                        'slidetop',
+                        'slidebottom',
+                        'slideright',
+                        'slideleft',
+                        'fade',
+                        'scale',
+                        'rotate',
+                        //'origami1',
+                        //'door',
+                        'scaledown',
+                        'blur',
+                        'hue',
+                        'contrast'
+                    ]
                     let i = parseInt(Math.random() * animations.length)
                     this.currentAnimation = animations[i];
+                    console.log(this.currentAnimation)
                 })
             }
         }
@@ -77,6 +92,10 @@ export default {
 </script>
 
 <style lang="scss">
+
+body {
+    background: black;
+}
 * {
     overflow: hidden;
 }
@@ -98,6 +117,7 @@ export default {
     backface-visibility: hidden;
     transform-style: preserve-3d;
     will-change: transform;
+    will-change: filter;
 
     img {
         overflow: hiddden;
@@ -119,16 +139,57 @@ export default {
     transition: all 1s ease-in-out;
 }
 
-// slide animation
-.slide-enter {
-    transform: translate3d(-100%, 0, 0);
+// slidetop animation
+.slidetop-enter {
+    transform: translate3d(0, -100%, 0);
 }
 
-.slide-leave-to {
+.slidetop-leave-to {
+    transform: translate3d(0, 100%, 0);
+}
+
+.slidetop-enter-active,  .slidetop-leave-active {
+    transition: all 1s ease-in-out;
+}
+
+
+// slide animation
+.slidebottom-enter {
+    transform: translate3d(0, 100%, 0);
+}
+
+.slidebottom-leave-to {
+    transform: translate3d(0, -100%, 0);
+}
+
+.slidebottom-enter-active,  .slidebottom-leave-active {
+    transition: all 1s ease-in-out;
+}
+
+// slide animation
+.slideright-enter {
     transform: translate3d(100%, 0, 0);
 }
 
-.slide-enter-active,  .slide-leave-active {
+.slideright-leave-to {
+    transform: translate3d(-100%, 0, 0);
+}
+
+.slideright-enter-active,  .slideright-leave-active {
+    transition: all 1s ease-in-out;
+}
+
+
+// slide animation
+.slideleft-enter {
+    transform: translate3d(-100%, 0, 0);
+}
+
+.slideleft-leave-to {
+    transform: translate3d(100%, 0, 0);
+}
+
+.slideleft-enter-active,  .slideleft-leave-active {
     transition: all 1s ease-in-out;
 }
 
@@ -146,5 +207,107 @@ export default {
 .scale-enter-active,  .scale-leave-active {
     transition: all 1s ease-in-out;
 }
+
+// rotate animationh
+.rotate-leave-to {
+    transform: rotateZ(360deg) scale3d(0.3, 0.3, 1);
+    opacity: 0;
+}
+
+.rotate-enter {
+    transform: rotateZ(-360deg) scale3d(0.3, 0.3, 1);
+    opacity: 0;
+}
+
+.rotate-enter-active, .rotate-leave-active {
+    transition: all 2s ease-in-out;
+}
+
+// origami 1
+.origami1-enter {
+    transform: scale3d(0.001, 1, 1);
+    transform-origin: center left;
+}
+
+.origami1-leave-to {
+    transform: scale3d(0.001, 1, 1);
+    transform-origin: center right;
+}
+
+.origami1-enter-active, .origami1-leave-active {
+    transition: all 1s linear;
+}
+
+// door
+.door-enter {
+    transform: rotate(-90deg);
+    transform-origin: 100% 100%;
+}
+
+.door-enter-active, .door-leave-active {
+    transition: all 1s ease-in-out;
+}
+
+//scaldown
+.scaledown-enter {
+    transform: scale3d(1.5, 1.5, 1);
+    opacity: 0;
+}
+
+.scaledown-leave-to {
+    transform: scale3d(0.7, 0.7, 1);
+    opacity: 0;
+}
+
+.scaledown-enter-active, .scaledown-leave-active {
+    transition: all 1s ease-in-out;
+}
+
+// blur animation
+.blur-leave-to {
+    filter: blur(100px);
+    opacity: 0;
+}
+
+.blur-enter {
+    filter: blur(100px);
+    opacity: 0;
+}
+
+.blur-enter-active, .blur-leave-active {
+    transition: all 1s ease-in-out;
+}
+
+
+// hue animation
+.hue-leave-to {
+    filter: hue-rotate(360deg);
+    opacity: 0;
+}
+
+.hue-enter {
+    filter: hue-rotate(-360deg);
+    opacity: 0;
+}
+
+.hue-enter-active, .hue-leave-active {
+    transition: all 1.5s ease-in-out;
+}
+
+// hue animation
+.contrast-leave-to {
+    filter: contrast(600%);
+    opacity: 0;
+}
+
+.contrast-enter {
+    filter: contrast(600%);
+    opacity: 0;
+}
+
+.contrast-enter-active, .contrast-leave-active {
+    transition: all 1s ease-in-out;
+}
+
 
 </style>

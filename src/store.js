@@ -28,7 +28,7 @@ export default new Vuex.Store({
                 return a
             }
 
-            return axios.get(API_HOST + '/hotpics')
+            return axios.get(API_HOST + '/hotpics?limit=500')
                 .then(res => {
                     commit('SET_PICTURES', {
                         pictures: shuffle(res.data)
@@ -37,7 +37,7 @@ export default new Vuex.Store({
         },
         LOAD_PICTURES: function ({ state, commit }) {
             state.loading = true
-            axios.get(API_HOST + '/hotpics?all=true')
+            axios.get(API_HOST + '/hotpics?all=true&limit=500')
                 .then(res => {
                     commit('SET_PICTURES', {
                         pictures: res.data

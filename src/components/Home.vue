@@ -23,6 +23,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+body {
+    overflow: scroll !important;
+}
 * {
     overflow: initial !important;
 }
