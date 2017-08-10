@@ -1,7 +1,14 @@
 <template>
 <div class="container">
     <div class="checkbox">
-        <input type="checkbox" name="censored" @click="changeCensoredStatus" v-model="censored" class="check">
+        <input
+            type="checkbox"
+            name="censored"
+            @click="changeCensoredStatus"
+            v-model="censored"
+            class="check"
+            :disabled="checkDisabled"
+        >
         censored
     </div>
 
@@ -19,6 +26,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -35,14 +43,27 @@ export default {
     methods: {
         changeCensoredStatus () {
             console.log('changing status to ' + this.censored)
+            this.disabled = true
+            axios.post(this.apiHost + '/' + this.picId, {
+                censured: this.censored
+            }).then((res) => {
+                console.log('response')
+                console.dir(res)
+                this.disabled = false
+            }).catch((err) => {
+                console.log('error')
+                console.dir(err)
+            })
         }
     },
     data () {
         return {
+            picId: this.data._id,
             up: this.data.ups,
             down: this.data.downs,
             conf: Math.round(this.data.confidenceLevel * 1000, 4) / 1000,
-            censored: this.data.censored || false
+            censored: this.data.censured || false,
+            checkDisabled: false
         }
     }
 }
