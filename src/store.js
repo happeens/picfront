@@ -14,6 +14,18 @@ export default new Vuex.Store({
         loading: true
     },
     actions: {
+        CLEAR_PICTURES ({ commit }) {
+            commit('CLEAR_PICTURES')
+        },
+        LOAD_SHOW_PICTURES ({ state, commit }) {
+            state.loading = true
+            return axios.get(API_HOST + '/hotpics')
+                .then(res => {
+                    commit('SET_PICTURES', {
+                        pictures: res.data
+                    })
+                })
+        },
         LOAD_PICTURES: function ({ state, commit }) {
             state.loading = true
             axios.get(API_HOST + '/hotpics?all=true')
@@ -82,6 +94,10 @@ export default new Vuex.Store({
         ADVANCE_BUFFER: (state, { nextPic }) => {
             state.buffer.splice(0, 1)
             state.buffer.push(nextPic)
+            state.loading = false
+        },
+        CLEAR_PICTURES: (state) => {
+            state.pictures = []
             state.loading = false
         }
     },
