@@ -23,6 +23,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+* {
+    overflow: initial !important;
+}
 div.pictures {
     flex-direction: row;
     display: flex;

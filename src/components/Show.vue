@@ -23,7 +23,7 @@ export default {
         return {
             turn: false,
             currentIndex: 0,
-            currentAnimation: 'slide'
+            currentAnimation: 'scale'
         }
     },
     computed: {
@@ -35,6 +35,9 @@ export default {
     methods: {
         turnPics () {
             this.currentIndex++
+            if(this.currentIndex >= this.$store.getters.pictures.length) {
+                this.currentIndex = 0
+            }
             let imghost = this.apiHost + this.$store.getters.pictures[this.currentIndex].filename
             let img = new Image()
             img.src = imghost
@@ -49,7 +52,7 @@ export default {
                 }
 
                 requestAnimationFrame(() => {
-                    let animations = ['slide', 'fade']
+                    let animations = ['slide', 'fade', 'scale']
                     let i = parseInt(Math.random() * animations.length)
                     this.currentAnimation = animations[i];
                 })
@@ -94,6 +97,7 @@ export default {
     max-height: 100%;
     backface-visibility: hidden;
     transform-style: preserve-3d;
+    will-change: transform;
 
     img {
         overflow: hiddden;
@@ -127,5 +131,20 @@ export default {
 .slide-enter-active,  .slide-leave-active {
     transition: all 1s ease-in-out;
 }
-</style>
 
+// scale animation
+.scale-enter {
+    transform: scale3d(0.7, 0.7, 1);
+    opacity: 0;
+}
+
+.scale-leave-to {
+    transform: scale3d(1.5, 1.5, 1);
+    opacity: 0;
+}
+
+.scale-enter-active,  .scale-leave-active {
+    transition: all 1s ease-in-out;
+}
+
+</style>
