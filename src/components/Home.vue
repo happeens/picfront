@@ -22,12 +22,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #app {
     overflow: scroll !important;
-}
-* {
-    overflow: initial !important;
 }
 div.pictures {
     flex-direction: row;
